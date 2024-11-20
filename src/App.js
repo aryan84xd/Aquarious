@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
+import Orders from './components/Orders';
+import { supabase } from './supabaseClient';
 
 function App() {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    // Initialize session
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+
+    // Listen for auth state changes
+    const { subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route
+          path="/orders"
+          element={session ? <Orders /> : <Navigate to="/signup" />}
+        />
+        <Route path="*" element={<Navigate to={session ? "/orders" : "/signup"} />} />
+      </Routes>
+    </Router> 
   );
 }
 
