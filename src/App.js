@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+// Component
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Orders from './components/Orders';
+import Preheader from './components/Preheader'
+
 import { supabase } from './supabaseClient';
+
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme"; // Import the theme
+import Typography from "@mui/material/Typography";
+
 
 function App() {
   const [session, setSession] = useState(null);
@@ -26,7 +34,9 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <ThemeProvider theme={theme}>
+    <Preheader />
+      <Router>
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
@@ -36,7 +46,8 @@ function App() {
         />
         <Route path="*" element={<Navigate to={session ? "/orders" : "/signup"} />} />
       </Routes>
-    </Router> 
+      </Router>
+      </ThemeProvider>
   );
 }
 
