@@ -9,6 +9,18 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
+    // Input validation
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    // Sign up logic
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setError(error.message);
@@ -33,7 +45,7 @@ const SignUp = () => {
         spacing={4} // Adds spacing between children
         sx={{
           width:'15vw',
-          height:'25vh',
+          height:'30vh',
           backgroundColor: "#fff", // Optional: white background for form
           padding: 4, // Adds padding inside the Stack
           border: "1px solid lightgrey", // Light grey border
@@ -45,6 +57,7 @@ const SignUp = () => {
         <h2>Sign Up</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <input
+          
           type="email"
           placeholder="Email"
           value={email}
@@ -52,6 +65,7 @@ const SignUp = () => {
           style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
         <input
+        
           type="password"
           placeholder="Password"
           value={password}

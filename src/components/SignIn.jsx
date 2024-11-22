@@ -32,7 +32,7 @@ const SignIn = () => {
         spacing={4} // Adds spacing between children
         sx={{
           width:'15vw',
-          height:'25vh',
+          height:'30vh',
           backgroundColor: '#fff', // Optional: white background for form
           padding: 4, // Adds padding inside the Stack
           border: '1px solid lightgrey', // Light grey border

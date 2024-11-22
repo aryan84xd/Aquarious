@@ -1,14 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import Stack from "@mui/material/Stack";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 import ButtonTemplate from "./ButtonTemplate";
 import { Typography } from "@mui/material";
 
 const Preheader = ({ children }) => {
-  const handleClick = () => {
-    console.log("SignedIN/Singup");
+  const navigate = useNavigate();
+
+  const handleClickSignIn = () => {
+    navigate("/signin");
   };
+
+  const handleClickSignUp = () => {
+    navigate("/signup");
+  };
+
   return (
     <Stack
       direction="row"
@@ -29,12 +37,12 @@ const Preheader = ({ children }) => {
       <Stack spacing={2} direction="row">
         <ButtonTemplate
           label="Sign In"
-          onClick={handleClick}
+          onClick={handleClickSignIn}
           variant="contained"
         />
         <ButtonTemplate
           label="Sign Up"
-          onClick={handleClick}
+          onClick={handleClickSignUp}
           variant="contained"
         />
       </Stack>

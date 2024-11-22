@@ -34,9 +34,10 @@ function App() {
   }, []);
 
   return (
+    <Router>
     <ThemeProvider theme={theme}>
     <Preheader />
-      <Router>
+      
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
@@ -46,8 +47,9 @@ function App() {
         />
         <Route path="*" element={<Navigate to={session ? "/orders" : "/signup"} />} />
       </Routes>
-      </Router>
+      
       </ThemeProvider>
+      </Router>
   );
 }
 
