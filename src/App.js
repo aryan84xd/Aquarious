@@ -5,6 +5,7 @@ import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Orders from './components/Orders';
 import Preheader from './components/Preheader'
+import LandingPage from './components/Landing';
 
 import { supabase } from './supabaseClient';
 
@@ -39,6 +40,7 @@ function App() {
     <Preheader />
       
       <Routes>
+      <Route path="/" element={<LandingPage/>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
         <Route
