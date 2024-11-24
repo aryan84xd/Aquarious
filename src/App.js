@@ -1,18 +1,27 @@
-import React, { Component, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { Component, useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 // Component
-import SignUp from './components/SignUp';
-import SignIn from './components/SignIn';
-import Orders from './components/Orders';
-import Preheader from './components/Preheader'
-import LandingPage from './components/Landing';
+import SignUp from "./components/SignUp";
+import SignIn from "./components/SignIn";
+import Main from "./components/Main";
+import Preheader from "./components/Preheader";
+import LandingPage from "./components/Landing";
 
-import { supabase } from './supabaseClient';
+import Trips from "./components/Trips"
+import Ports from "./components/Ports"
+import Receipts from "./components/Receipts"
+
+
+import { supabase } from "./supabaseClient";
 
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme"; // Import the theme
 import Typography from "@mui/material/Typography";
-
 
 function App() {
   const [session, setSession] = useState(null);
@@ -24,9 +33,11 @@ function App() {
     });
 
     // Listen for auth state changes
-    const { subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    const { subscription } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+      }
+    );
 
     // Cleanup on component unmount
     return () => {
@@ -36,22 +47,28 @@ function App() {
 
   return (
     <Router>
-    <ThemeProvider theme={theme}>
-    <Preheader />
-      
-      <Routes>
-      <Route path="/" element={<LandingPage/>} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route
-          path="/orders"
-          element={session ? <Orders /> : <Navigate to="/signup" />}
-        />
-        <Route path="*" element={<Navigate to={session ? "/orders" : "/signup"} />} />
-      </Routes>
-      
+      <ThemeProvider theme={theme}>
+        <Preheader />
+
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route
+            path="/main"
+            element={session ? <Main /> : <Navigate to="/signup" />}
+          >
+            <Route path="trips" element={<Trips />} />
+            <Route path="ports" element={<Ports />} />
+            <Route path="receipts" element={<Receipts />} />
+          </Route>
+          <Route
+            path="*"
+            element={<Navigate to={session ? "/main" : "/signup"} />}
+          />
+        </Routes>
       </ThemeProvider>
-      </Router>
+    </Router>
   );
 }
 
