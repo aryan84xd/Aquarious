@@ -1,26 +1,25 @@
-// PortsManagement.jsx
-import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Card, 
-  CardContent, 
-  Typography, 
-  TextField, 
-  Button, 
-  Grid, 
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Grid,
   Alert,
   CircularProgress,
-  Box
-} from '@mui/material';
-import { supabase } from '../supabaseClient';
-import PortsMap from './PortsMap';
+  Box,
+} from "@mui/material";
+import { supabase } from "../supabaseClient";
+import PortsMap from "./PortsMap";
 
 const initialFormState = {
-  name: '',
-  no_gates: '',
-  terminal_cost: '',
-  latitude: '',
-  longitude: ''
+  name: "",
+  no_gates: "",
+  terminal_cost: "",
+  latitude: "",
+  longitude: "",
 };
 
 const Ports = () => {
@@ -36,14 +35,15 @@ const Ports = () => {
   const fetchPorts = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.from('port').select('*');
-      console.log(data)
+
+      let { data: port, error } = await supabase
+        .from("port_with_coordinates")
+        .select("id, name, no_gates, terminal_cost, longitude, latitude");
+
+      console.log('Fetched Ports:', port); 
       if (error) throw error;
-      if (Array.isArray(data)) {
-        setPorts(data); // Only set data if it's an array
-      } else {
-        setError('Unexpected response from the server');
-      }
+
+      setPorts(port || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -51,35 +51,36 @@ const Ports = () => {
     }
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!isFormValid()) {
       return;
     }
 
     try {
       const location = `POINT(${formData.longitude} ${formData.latitude})`;
-      
-      const { data, error } = await supabase.from('port').insert([{
-        name: formData.name,
-        no_gates: parseInt(formData.no_gates),
-        terminal_cost: parseFloat(formData.terminal_cost),
-        location
-      }]);
+
+      const { data, error } = await supabase.from("port").insert([
+        {
+          name: formData.name,
+          no_gates: parseInt(formData.no_gates),
+          terminal_cost: parseFloat(formData.terminal_cost),
+          location,
+        },
+      ]);
 
       if (error) throw error;
 
-      setPorts(prev => [...prev, ...data]);
+      setPorts((prev) => [...prev, ...data]);
       setFormData(initialFormState);
       setError(null);
     } catch (err) {
@@ -88,19 +89,30 @@ const Ports = () => {
   };
 
   const isFormValid = () => {
-    const requiredFields = ['name', 'no_gates', 'terminal_cost', 'latitude', 'longitude'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
-    
+    const requiredFields = [
+      "name",
+      "no_gates",
+      "terminal_cost",
+      "latitude",
+      "longitude",
+    ];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
     if (missingFields.length > 0) {
-      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setError(
+        `Please fill in all required fields: ${missingFields.join(", ")}`
+      );
       return false;
     }
-    
-    if (isNaN(parseFloat(formData.latitude)) || isNaN(parseFloat(formData.longitude))) {
-      setError('Latitude and longitude must be valid numbers');
+
+    if (
+      isNaN(parseFloat(formData.latitude)) ||
+      isNaN(parseFloat(formData.longitude))
+    ) {
+      setError("Latitude and longitude must be valid numbers");
       return false;
     }
-    
+
     return true;
   };
 
@@ -125,7 +137,7 @@ const Ports = () => {
                   required
                 />
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
@@ -138,7 +150,7 @@ const Ports = () => {
                   required
                 />
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
@@ -152,7 +164,7 @@ const Ports = () => {
                   required
                 />
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
@@ -166,7 +178,7 @@ const Ports = () => {
                   required
                 />
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
@@ -189,10 +201,10 @@ const Ports = () => {
             )}
 
             <Box sx={{ mt: 3 }}>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                color="primary" 
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
                 size="large"
               >
                 Add Port
@@ -202,18 +214,25 @@ const Ports = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom>
             Ports Map
           </Typography>
-          
+
           {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
               <CircularProgress />
             </Box>
           ) : (
-            <Box sx={{ height: 600, width: '100%', borderRadius: 1, overflow: 'hidden' }}>
+            <Box
+              sx={{
+                height: 600,
+                width: "100%",
+                borderRadius: 1,
+                overflow: "hidden",
+              }}
+            >
               <PortsMap ports={ports} />
             </Box>
           )}

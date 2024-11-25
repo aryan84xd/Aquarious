@@ -11,7 +11,7 @@ const Main = () => {
   ];
 
   return (
-    <Box display="flex" height="100vh">
+    <Box display="flex" style={{ minHeight: '100vh'}}>
       {/* Sidebar */}
       <Box
         width="20%"
@@ -54,6 +54,7 @@ const Main = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
+        
       >
         <Outlet />
       </Box>
