@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { DirectionsBoat, LocationOn, Receipt } from '@mui/icons-material';
+import { DirectionsBoat, LocationOn, Receipt, Commute } from '@mui/icons-material'; // Added Commute icon
 import { Outlet, NavLink } from 'react-router-dom';
 
 const Main = () => {
@@ -8,6 +8,7 @@ const Main = () => {
     { name: 'Trips', icon: <DirectionsBoat />, route: '/main/trips' },
     { name: 'Ports', icon: <LocationOn />, route: '/main/ports' },
     { name: 'Receipts', icon: <Receipt />, route: '/main/receipts' },
+    { name: 'Vessel', icon: <Commute />, route: '/main/vessels' }, // Added Vessel
   ];
 
   return (
@@ -54,7 +55,6 @@ const Main = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        
       >
         <Outlet />
       </Box>

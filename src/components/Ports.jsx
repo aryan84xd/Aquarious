@@ -61,14 +61,14 @@ const Ports = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!isFormValid()) {
       return;
     }
-
+  
     try {
       const location = `POINT(${formData.longitude} ${formData.latitude})`;
-
+  
       const { data, error } = await supabase.from("port").insert([
         {
           name: formData.name,
@@ -77,16 +77,23 @@ const Ports = () => {
           location,
         },
       ]);
-
+  
       if (error) throw error;
-
-      setPorts((prev) => [...prev, ...data]);
+  
+      // Check if data is valid before updating the state
+      if (Array.isArray(data)) {
+        setPorts((prev) => [...prev, ...data]); // Update ports state with valid data
+      } else {
+        setError("Invalid data returned from database");
+      }
+  
       setFormData(initialFormState);
       setError(null);
     } catch (err) {
       setError(err.message);
     }
   };
+  
 
   const isFormValid = () => {
     const requiredFields = [

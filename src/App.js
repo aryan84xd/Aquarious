@@ -15,7 +15,7 @@ import LandingPage from "./components/Landing";
 import Trips from "./components/Trips"
 import Ports from "./components/Ports"
 import Receipts from "./components/Receipts"
-
+import Vessels from "./components/Vessels"
 
 import { supabase } from "./supabaseClient";
 
@@ -56,15 +56,16 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route
             path="/main"
-            element={session ? <Main /> : <Navigate to="/signup" />}
+            element={session ? <Main /> : <Navigate to="/signin" />}
           >
             <Route path="trips" element={<Trips />} />
             <Route path="ports" element={<Ports />} />
             <Route path="receipts" element={<Receipts />} />
+            <Route path="vessels" element={<Vessels />} />
           </Route>
           <Route
             path="*"
-            element={<Navigate to={session ? "/main" : "/signup"} />}
+            element={<Navigate to={session ? "/main" : "/signin"} />}
           />
         </Routes>
       </ThemeProvider>

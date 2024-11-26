@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/material';
+
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,11 +10,14 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
     } else {
-      navigate('/orders'); // Redirect to orders page
+      // Save user_id to localStorage
+      const user_id = data.user.id; // Retrieve user_id
+      localStorage.setItem('user_id', user_id); // Save to local storage
+      navigate('/main'); // Redirect to orders page
     }
   };
 
@@ -24,15 +28,15 @@ const SignIn = () => {
         justifyContent: 'center', // Center horizontally
         alignItems: 'flex-start', // Align items starting from the top
         height: '80vh',
-        width:'100vw', // Full viewport height
+        width: '100vw', // Full viewport height
         backgroundColor: '#f9f9f9', // Optional background color for the page
       }}
     >
       <Stack
         spacing={4} // Adds spacing between children
         sx={{
-          width:'15vw',
-          height:'30vh',
+          width: '15vw',
+          height: '30vh',
           backgroundColor: '#fff', // Optional: white background for form
           padding: 4, // Adds padding inside the Stack
           border: '1px solid lightgrey', // Light grey border
