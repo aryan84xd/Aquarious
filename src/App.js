@@ -12,10 +12,10 @@ import Main from "./components/Main";
 import Preheader from "./components/Preheader";
 import LandingPage from "./components/Landing";
 
-import Trips from "./components/Trips"
-import Ports from "./components/Ports"
-import Receipts from "./components/Receipts"
-import Vessels from "./components/Vessels"
+import Trips from "./components/Trips";
+import Ports from "./components/Ports";
+import Receipts from "./components/Receipts";
+import Vessels from "./components/Vessels";
 
 import { supabase } from "./supabaseClient";
 

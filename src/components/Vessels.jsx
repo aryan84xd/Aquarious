@@ -36,34 +36,34 @@ const Vessels = () => {
   const fetchVessels = async () => {
     try {
       setIsLoading(true);
-  
+
       const user_id = localStorage.getItem("user_id"); // Get user_id from local storage
       if (!user_id) {
         setError("User not logged in");
         setIsLoading(false);
         return;
       }
-      console.log(user_id)
-  
+      console.log(user_id);
+
       // Make the query to Supabase
       const { data, error } = await supabase
         .from("vessel")
-        .select("id, columns, crew, fuel, model, range, rows, total_seat, created_at")
+        .select(
+          "id, columns, crew, fuel, model, range, rows, total_seat, created_at"
+        )
         .eq("user_id", user_id); // Filter by user_id
-      
-        console.log(data)
+
+      console.log(data);
       if (error) throw error;
-  
+
       // Correctly setting the vessels state
       setVessels(data || []); // `data` is the array of vessels
-  
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,18 +81,18 @@ const Vessels = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!isFormValid()) return;
-  
+
     try {
       const user_id = localStorage.getItem("user_id"); // Get user_id from local storage
       if (!user_id) {
         setError("User not logged in");
         return;
       }
-  
+
       const total_seat = calculateTotalSeats();
-  
+
       const { data, error } = await supabase.from("vessel").insert([
         {
           model: formData.model,
@@ -105,16 +105,17 @@ const Vessels = () => {
           user_id, // Include user_id in the insert
         },
       ]);
-  
+
       if (error) throw error;
-  
+
       // Check if data is valid before updating the state
-      if (Array.isArray(data)) {
-        setVessels((prev) => [...prev, ...data]); // Update vessels state with valid data
+      if (Array.isArray(data) && data.length > 0) {
+        setVessels((prev) => [...prev, data[0]]); // Add the newly created vessel directly to the state
+        // Update vessels state with valid data
       } else {
         setError("Invalid data returned from database");
       }
-  
+
       setFormData(initialFormState);
       setError(null);
     } catch (err) {
@@ -123,11 +124,20 @@ const Vessels = () => {
   };
 
   const isFormValid = () => {
-    const requiredFields = ["model", "crew", "columns", "rows", "fuel", "range"];
+    const requiredFields = [
+      "model",
+      "crew",
+      "columns",
+      "rows",
+      "fuel",
+      "range",
+    ];
     const missingFields = requiredFields.filter((field) => !formData[field]);
 
     if (missingFields.length > 0) {
-      setError(`Please fill in all required fields: ${missingFields.join(", ")}`);
+      setError(
+        `Please fill in all required fields: ${missingFields.join(", ")}`
+      );
       return false;
     }
 
@@ -224,7 +234,12 @@ const Vessels = () => {
             )}
 
             <Box sx={{ mt: 3 }}>
-              <Button type="submit" variant="contained" color="primary" size="large">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
                 Add Vessel
               </Button>
             </Box>
@@ -252,9 +267,16 @@ const Vessels = () => {
                       alignItems: "center",
                       justifyContent: "space-between",
                       p: 2,
+                      border: "1px solid", // Add border
+                      borderColor: "grey.300", // Use a neutral color from the theme
+                      borderRadius: 2, // Add rounded corners
+                      boxShadow: 2, // Add a subtle shadow
                     }}
                   >
-                    <DirectionsBoat fontSize="large" sx={{ color: "primary.main" }} />
+                    <DirectionsBoat
+                      fontSize="large"
+                      sx={{ color: "primary.main" }}
+                    />
                     <Box sx={{ ml: 2 }}>
                       <Typography variant="h6">{vessel.model}</Typography>
                       <Typography variant="body2">
