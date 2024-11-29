@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import TripsCards from "./TripsCards";
+import TripsForm from "./TripsForm";
 import {
   Container,
   Card,
@@ -18,6 +20,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Stack,
 } from "@mui/material";
 import { supabase } from "../supabaseClient";
 
@@ -307,317 +310,321 @@ const Trips = () => {
 
   // Render the component
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Trip Creation Form */}
-      <Card sx={{ mb: 4 }}>
-        <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
-            Add New Trip
-          </Typography>
+    <Stack width='70%'>
+      <TripsForm />
+      <TripsCards />
+    </Stack>
+    // <Container maxWidth="lg" sx={{ py: 4 }}>
+    //   {/* Trip Creation Form */}
+    //   <Card sx={{ mb: 4 }}>
+    //     <CardContent>
+    //       <Typography variant="h5" component="h2" gutterBottom>
+    //         Add New Trip
+    //       </Typography>
 
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Trip Name"
-                  name="trip_name"
-                  value={formData.trip_name}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Start Port"
-                  name="start_port"
-                  value={formData.start_port}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                >
-                  {ports.map((port) => (
-                    <MenuItem key={port.id} value={port.name}>
-                      {port.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  select
-                  fullWidth
-                  label="End Port"
-                  name="end_port"
-                  value={formData.end_port}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                >
-                  {ports
-                    .filter((port) => port.name !== formData.start_port)
-                    .map((port) => (
-                      <MenuItem key={port.id} value={port.name}>
-                        {port.name}
-                      </MenuItem>
-                    ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="time"
-                  fullWidth
-                  label="Start Time"
-                  name="start_time"
-                  value={formData.start_time}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="time"
-                  fullWidth
-                  label="End Time"
-                  name="end_time"
-                  value={formData.end_time}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="date"
-                  fullWidth
-                  label="Date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Vessel"
-                  name="vessel"
-                  value={formData.vessel}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                >
-                  {vessels.map((vessel) => (
-                    <MenuItem key={vessel.id} value={vessel.id}>
-                      {vessel.model}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="number"
-                  fullWidth
-                  label="Cost (in USD)"
-                  name="cost"
-                  value={formData.cost}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="number"
-                  fullWidth
-                  label="Distance (in km)"
-                  name="distance"
-                  value={formData.distance}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  component="label"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                >
-                  Upload Images
-                  <input
-                    type="file"
-                    hidden
-                    multiple
-                    onChange={handleImageUpload}
-                  />
-                </Button>
-              </Grid>
-            </Grid>
+    //       <form onSubmit={handleSubmit}>
+    //         <Grid container spacing={3}>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               fullWidth
+    //               label="Trip Name"
+    //               name="trip_name"
+    //               value={formData.trip_name}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               select
+    //               fullWidth
+    //               label="Start Port"
+    //               name="start_port"
+    //               value={formData.start_port}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             >
+    //               {ports.map((port) => (
+    //                 <MenuItem key={port.id} value={port.name}>
+    //                   {port.name}
+    //                 </MenuItem>
+    //               ))}
+    //             </TextField>
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               select
+    //               fullWidth
+    //               label="End Port"
+    //               name="end_port"
+    //               value={formData.end_port}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             >
+    //               {ports
+    //                 .filter((port) => port.name !== formData.start_port)
+    //                 .map((port) => (
+    //                   <MenuItem key={port.id} value={port.name}>
+    //                     {port.name}
+    //                   </MenuItem>
+    //                 ))}
+    //             </TextField>
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               type="time"
+    //               fullWidth
+    //               label="Start Time"
+    //               name="start_time"
+    //               value={formData.start_time}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //               InputLabelProps={{ shrink: true }}
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               type="time"
+    //               fullWidth
+    //               label="End Time"
+    //               name="end_time"
+    //               value={formData.end_time}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //               InputLabelProps={{ shrink: true }}
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               type="date"
+    //               fullWidth
+    //               label="Date"
+    //               name="date"
+    //               value={formData.date}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //               InputLabelProps={{ shrink: true }}
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               select
+    //               fullWidth
+    //               label="Vessel"
+    //               name="vessel"
+    //               value={formData.vessel}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             >
+    //               {vessels.map((vessel) => (
+    //                 <MenuItem key={vessel.id} value={vessel.id}>
+    //                   {vessel.model}
+    //                 </MenuItem>
+    //               ))}
+    //             </TextField>
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               type="number"
+    //               fullWidth
+    //               label="Cost (in USD)"
+    //               name="cost"
+    //               value={formData.cost}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12} md={6}>
+    //             <TextField
+    //               type="number"
+    //               fullWidth
+    //               label="Distance (in km)"
+    //               name="distance"
+    //               value={formData.distance}
+    //               onChange={handleChange}
+    //               variant="outlined"
+    //               required
+    //             />
+    //           </Grid>
+    //           <Grid item xs={12}>
+    //             <Button
+    //               variant="contained"
+    //               component="label"
+    //               fullWidth
+    //               sx={{ mt: 2 }}
+    //             >
+    //               Upload Images
+    //               <input
+    //                 type="file"
+    //                 hidden
+    //                 multiple
+    //                 onChange={handleImageUpload}
+    //               />
+    //             </Button>
+    //           </Grid>
+    //         </Grid>
 
-            {error && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            )}
+    //         {error && (
+    //           <Alert severity="error" sx={{ mt: 2 }}>
+    //             {error}
+    //           </Alert>
+    //         )}
 
-            {success && (
-              <Alert severity="success" sx={{ mt: 2 }}>
-                {success}
-              </Alert>
-            )}
+    //         {success && (
+    //           <Alert severity="success" sx={{ mt: 2 }}>
+    //             {success}
+    //           </Alert>
+    //         )}
 
-            <Box sx={{ mt: 2 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                disabled={isLoading}
-              >
-                {isLoading ? "Loading..." : "Create Trip"}
-              </Button>
-            </Box>
-          </form>
-        </CardContent>
-      </Card>
+    //         <Box sx={{ mt: 2 }}>
+    //           <Button
+    //             type="submit"
+    //             variant="contained"
+    //             color="primary"
+    //             fullWidth
+    //             disabled={isLoading}
+    //           >
+    //             {isLoading ? "Loading..." : "Create Trip"}
+    //           </Button>
+    //         </Box>
+    //       </form>
+    //     </CardContent>
+    //   </Card>
 
-      {/* Existing Trips Section */}
-      <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 4 }}>
-        Existing Trips
-      </Typography>
-      <Grid container spacing={3}>
-        {existingTrips.map((trip) => (
-          <Grid item xs={12} sm={6} md={4} key={trip.id}>
-            <Card
-              sx={{
-                maxWidth: 345,
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {trip.trip_images && trip.trip_images.length > 0 ? (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={`${process.env.REACT_APP_SUPABASE_STORAGE_URL}/${trip.trip_images[0].image_url}`}
-                  alt={trip.trip_name}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    height: 140,
-                    bgcolor: "grey.300",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  No Image
-                </Box>
-              )}
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  {trip.trip_name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  From: {trip.start_port} To: {trip.end_port}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Date: {trip.date}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Available Seats: {trip.capacity}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={() => handleOpenBookingDialog(trip)}
-                  disabled={trip.capacity === 0}
-                >
-                  Book Trip
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+    //   {/* Existing Trips Section */}
+    //   <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 4 }}>
+    //     Existing Trips
+    //   </Typography>
+    //   <Grid container spacing={3}>
+    //     {existingTrips.map((trip) => (
+    //       <Grid item xs={12} sm={6} md={4} key={trip.id}>
+    //         <Card
+    //           sx={{
+    //             maxWidth: 345,
+    //             height: "100%",
+    //             display: "flex",
+    //             flexDirection: "column",
+    //           }}
+    //         >
+    //           {trip.trip_images && trip.trip_images.length > 0 ? (
+    //             <CardMedia
+    //               component="img"
+    //               height="140"
+    //               image={`${process.env.REACT_APP_SUPABASE_STORAGE_URL}/${trip.trip_images[0].image_url}`}
+    //               alt={trip.trip_name}
+    //             />
+    //           ) : (
+    //             <Box
+    //               sx={{
+    //                 height: 140,
+    //                 bgcolor: "grey.300",
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 justifyContent: "center",
+    //               }}
+    //             >
+    //               No Image
+    //             </Box>
+    //           )}
+    //           <CardContent>
+    //             <Typography gutterBottom variant="h6" component="div">
+    //               {trip.trip_name}
+    //             </Typography>
+    //             <Typography variant="body2" color="text.secondary">
+    //               From: {trip.start_port} To: {trip.end_port}
+    //             </Typography>
+    //             <Typography variant="body2" color="text.secondary">
+    //               Date: {trip.date}
+    //             </Typography>
+    //             <Typography variant="body2" color="text.secondary">
+    //               Available Seats: {trip.capacity}
+    //             </Typography>
+    //           </CardContent>
+    //           <CardActions>
+    //             <Button
+    //               size="small"
+    //               color="primary"
+    //               onClick={() => handleOpenBookingDialog(trip)}
+    //               disabled={trip.capacity === 0}
+    //             >
+    //               Book Trip
+    //             </Button>
+    //           </CardActions>
+    //         </Card>
+    //       </Grid>
+    //     ))}
+    //   </Grid>
 
-      {/* Booking Dialog */}
-      <Dialog
-        open={bookingDialogOpen}
-        onClose={() => setBookingDialogOpen(false)}
-      >
-        <DialogTitle>Book Trip</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Book a trip to {selectedTrip?.trip_name}
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="customerName"
-            label="Customer Name"
-            fullWidth
-            variant="outlined"
-            value={bookingData.customerName}
-            onChange={handleBookingChange}
-          />
-          <TextField
-            margin="dense"
-            name="numberOfPeople"
-            label="Number of People"
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={bookingData.numberOfPeople}
-            onChange={handleBookingChange}
-            inputProps={{ min: 1, max: selectedTrip?.capacity }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setBookingDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleBookTrip} color="primary">
-            Book
-          </Button>
-        </DialogActions>
-      </Dialog>
+    //   {/* Booking Dialog */}
+    //   <Dialog
+    //     open={bookingDialogOpen}
+    //     onClose={() => setBookingDialogOpen(false)}
+    //   >
+    //     <DialogTitle>Book Trip</DialogTitle>
+    //     <DialogContent>
+    //       <DialogContentText>
+    //         Book a trip to {selectedTrip?.trip_name}
+    //       </DialogContentText>
+    //       <TextField
+    //         autoFocus
+    //         margin="dense"
+    //         name="customerName"
+    //         label="Customer Name"
+    //         fullWidth
+    //         variant="outlined"
+    //         value={bookingData.customerName}
+    //         onChange={handleBookingChange}
+    //       />
+    //       <TextField
+    //         margin="dense"
+    //         name="numberOfPeople"
+    //         label="Number of People"
+    //         type="number"
+    //         fullWidth
+    //         variant="outlined"
+    //         value={bookingData.numberOfPeople}
+    //         onChange={handleBookingChange}
+    //         inputProps={{ min: 1, max: selectedTrip?.capacity }}
+    //       />
+    //     </DialogContent>
+    //     <DialogActions>
+    //       <Button onClick={() => setBookingDialogOpen(false)} color="primary">
+    //         Cancel
+    //       </Button>
+    //       <Button onClick={handleBookTrip} color="primary">
+    //         Book
+    //       </Button>
+    //     </DialogActions>
+    //   </Dialog>
 
-      {/* Error and Success Alerts */}
-      {error && (
-        <Alert
-          severity="error"
-          onClose={() => handleCloseAlert("error")}
-          sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}
-        >
-          {error}
-        </Alert>
-      )}
-      {success && (
-        <Alert
-          severity="success"
-          onClose={() => handleCloseAlert("success")}
-          sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}
-        >
-          {success}
-        </Alert>
-      )}
-    </Container>
+    //   {/* Error and Success Alerts */}
+    //   {error && (
+    //     <Alert
+    //       severity="error"
+    //       onClose={() => handleCloseAlert("error")}
+    //       sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}
+    //     >
+    //       {error}
+    //     </Alert>
+    //   )}
+    //   {success && (
+    //     <Alert
+    //       severity="success"
+    //       onClose={() => handleCloseAlert("success")}
+    //       sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}
+    //     >
+    //       {success}
+    //     </Alert>
+    //   )}
+    // </Container>
   );
 };
 
