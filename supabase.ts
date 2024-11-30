@@ -75,6 +75,7 @@ export type Database = {
           total_cost: number | null
           trip_id: string | null
           trip_name: string | null
+          user_id: string
         }
         Insert: {
           cost_per?: number | null
@@ -89,6 +90,7 @@ export type Database = {
           total_cost?: number | null
           trip_id?: string | null
           trip_name?: string | null
+          user_id: string
         }
         Update: {
           cost_per?: number | null
@@ -103,6 +105,7 @@ export type Database = {
           total_cost?: number | null
           trip_id?: string | null
           trip_name?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -136,7 +139,7 @@ export type Database = {
           cost: number
           created_at: string
           date: string
-          diatance: number
+          distance: number
           end_gate: number | null
           end_port: string
           end_time: string
@@ -153,7 +156,7 @@ export type Database = {
           cost: number
           created_at?: string
           date: string
-          diatance: number
+          distance: number
           end_gate?: number | null
           end_port: string
           end_time: string
@@ -170,7 +173,7 @@ export type Database = {
           cost?: number
           created_at?: string
           date?: string
-          diatance?: number
+          distance?: number
           end_gate?: number | null
           end_port?: string
           end_time?: string
@@ -183,6 +186,35 @@ export type Database = {
           vessel?: string | null
         }
         Relationships: []
+      }
+      trip_images: {
+        Row: {
+          id: number
+          image_url: string
+          trip_id: number | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          id?: number
+          image_url: string
+          trip_id?: number | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          id?: number
+          image_url?: string
+          trip_id?: number | null
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_images_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vessel: {
         Row: {

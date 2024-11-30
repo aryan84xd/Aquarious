@@ -4,7 +4,6 @@ import {
   CardContent,
   Typography,
   TextField,
-  MenuItem,
   Button,
   Alert,
   Box,
@@ -16,45 +15,112 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid, // Import Grid instead of Stack
+  Grid,
 } from "@mui/material";
+import logo from "../assets/logo.png";
 import { supabase } from "../supabaseClient";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+
+// PDF Receipt Generator Function
+const generatePDFReceipt = (receipt) => {
+  const doc = new jsPDF();
+
+  // Add Company Logo
+  
+  doc.addImage(logo, "PNG", 15, 10, 30, 30);
+
+  // Add Company Name and Header
+  doc.setFontSize(20);
+  doc.text("Aquarious", 50, 20);
+  doc.setFontSize(14);
+  doc.text("Trip Booking Receipt", 50, 30);
+  doc.setFontSize(10);
+  doc.text("Providing hassle-free ferry booking services", 50, 36);
+
+  // Receipt Info
+  doc.setFontSize(12);
+  doc.text(`Receipt Date: ${new Date().toLocaleDateString()}`, 15, 50);
+  doc.text(`Receipt Number: ${receipt.id || "N/A"}`, 15, 60);
+
+  // Customer Details
+  doc.setFontSize(14);
+  doc.text("Customer Details", 15, 75);
+  doc.setFontSize(12);
+  doc.text(`Name: ${receipt.customer_name}`, 15, 85);
+  doc.text(`Contact: ${receipt.contact_number}`, 15, 95);
+
+  // Trip Details
+  doc.setFontSize(14);
+  doc.text("Trip Details", 15, 110);
+  doc.setFontSize(12);
+  doc.text(`Trip Name: ${receipt.trip_name}`, 15, 120);
+  doc.text(`From: ${receipt.start_port}`, 15, 130);
+  doc.text(`To: ${receipt.end_port}`, 15, 140);
+  doc.text(`Number of People: ${receipt.no_people}`, 15, 150);
+  // doc.text(`Travel Date: ${receipt.date || "N/A"}`, 15, 160);
+
+  // Cost Breakdown
+  doc.setFontSize(14);
+  doc.text("Cost Breakdown", 15, 175);
+  doc.setFontSize(12);
+
+  // Use autoTable for better cost breakdown
+  doc.autoTable({
+    startY: 180,
+    head: [["Description", "Amount"]],
+    body: [
+      ["Trip Cost per Person", `$${receipt.cost_per.toFixed(2)}`],
+      ["Terminal Cost", `$${receipt.terminal_cost.toFixed(2)}`],
+      ["Number of People", receipt.no_people],
+      ["Total Cost", `$${receipt.total_cost.toFixed(2)}`],
+    ],
+    theme: "striped",
+  });
+
+  // Footer Message
+  doc.setFontSize(10);
+  doc.text("Thank you for booking with Aquarious!", 105, 290, { align: "center" });
+
+  // Convert to Blob and open in new tab
+  const pdfBlob = doc.output("blob");
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+  window.open(pdfUrl, "_blank");
+};
+
 
 const TripsCards = () => {
   const initialBookingState = {
     customerName: "",
     numberOfPeople: "",
+    contactNumber: "",
   };
 
-  // State for existing trips
   const [existingTrips, setExistingTrips] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Booking state
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [bookingData, setBookingData] = useState(initialBookingState);
+  const [lastReceipt, setLastReceipt] = useState(null);
 
-  // Open booking dialog
   const handleOpenBookingDialog = (trip) => {
     setSelectedTrip(trip);
     setBookingDialogOpen(true);
     setBookingData(initialBookingState);
   };
 
-  // Handle booking form changes
   const handleBookingChange = (e) => {
     const { name, value } = e.target;
     setBookingData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit trip booking
   const handleBookTrip = async () => {
-    const { customerName, numberOfPeople } = bookingData;
+    const { customerName, numberOfPeople, contactNumber } = bookingData;
 
-    if (!customerName || !numberOfPeople) {
+    if (!customerName || !numberOfPeople || !contactNumber) {
       setError("Please fill in all booking details.");
       return;
     }
@@ -66,21 +132,50 @@ const TripsCards = () => {
       return;
     }
 
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(contactNumber)) {
+      setError("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
     try {
+      const { data: portData, error: portError } = await supabase
+        .from("port")
+        .select("terminal_cost")
+        .eq("name", selectedTrip.start_port)
+        .single();
+
+      if (portError) throw portError;
+
+      const terminalCost = portData?.terminal_cost || 0;
+      const totalCost = peopleCount * (parseFloat(selectedTrip.cost) + terminalCost);
+
+      const user_id = localStorage.getItem("user_id");
+
+      if (!user_id) {
+        setError("User not logged in.");
+        return;
+      }
+
       // Insert booking into the receipt table
-      const { error: receiptError } = await supabase.from("receipt").insert([
-        {
-          trip_id: selectedTrip.id,
-          customer_name: customerName,
-          no_people: peopleCount,
-          cost_per: parseFloat(selectedTrip.cost),
-          total_cost: parseFloat(selectedTrip.cost) * peopleCount,
-          start_port: selectedTrip.start_port,
-          end_port: selectedTrip.end_port,
-          trip_name: selectedTrip.trip_name,
-          terminal_cost: 0,
-        },
-      ]);
+      const { data: receiptData, error: receiptError } = await supabase
+        .from("receipt")
+        .insert([
+          {
+            trip_id: selectedTrip.id,
+            user_id: user_id,
+            customer_name: customerName,
+            contact_number: contactNumber,
+            no_people: peopleCount,
+            cost_per: parseFloat(selectedTrip.cost),
+            terminal_cost: terminalCost,
+            total_cost: totalCost,
+            start_port: selectedTrip.start_port,
+            end_port: selectedTrip.end_port,
+            trip_name: selectedTrip.trip_name,
+          },
+        ])
+        .select(); // Return the inserted receipt
 
       if (receiptError) throw receiptError;
 
@@ -98,7 +193,25 @@ const TripsCards = () => {
       // Reset booking dialog
       setBookingDialogOpen(false);
       setBookingData(initialBookingState);
-      setSuccess("Booking successful!");
+
+      // Store last receipt for PDF generation
+      const lastReceiptData = receiptData[0];
+      setLastReceipt(lastReceiptData);
+
+      // Set success message with PDF download option
+      setSuccess(
+        <div>
+          Booking successful! 
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => generatePDFReceipt(lastReceiptData)}
+            sx={{ ml: 2 }}
+          >
+            Download Receipt
+          </Button>
+        </div>
+      );
     } catch (err) {
       setError(err.message);
     }
@@ -227,6 +340,21 @@ const TripsCards = () => {
             variant="outlined"
             value={bookingData.customerName}
             onChange={handleBookingChange}
+          />
+          <TextField
+            margin="dense"
+            name="contactNumber"
+            label="Contact Number"
+            type="tel"
+            fullWidth
+            variant="outlined"
+            value={bookingData.contactNumber}
+            onChange={handleBookingChange}
+            inputProps={{ 
+              pattern: "[0-9]{10}",
+              maxLength: 10
+            }}
+            helperText="10-digit phone number"
           />
           <TextField
             margin="dense"
