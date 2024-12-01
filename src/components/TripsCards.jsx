@@ -19,16 +19,15 @@ import {
 } from "@mui/material";
 import logo from "../assets/logo.png";
 import { supabase } from "../supabaseClient";
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 // PDF Receipt Generator Function
 const generatePDFReceipt = (receipt) => {
   const doc = new jsPDF();
 
   // Add Company Logo
-  
+
   doc.addImage(logo, "PNG", 15, 10, 30, 30);
 
   // Add Company Name and Header
@@ -81,14 +80,15 @@ const generatePDFReceipt = (receipt) => {
 
   // Footer Message
   doc.setFontSize(10);
-  doc.text("Thank you for booking with Aquarious!", 105, 290, { align: "center" });
+  doc.text("Thank you for booking with Aquarious!", 105, 290, {
+    align: "center",
+  });
 
   // Convert to Blob and open in new tab
   const pdfBlob = doc.output("blob");
   const pdfUrl = URL.createObjectURL(pdfBlob);
   window.open(pdfUrl, "_blank");
 };
-
 
 const TripsCards = () => {
   const initialBookingState = {
@@ -148,7 +148,8 @@ const TripsCards = () => {
       if (portError) throw portError;
 
       const terminalCost = portData?.terminal_cost || 0;
-      const totalCost = peopleCount * (parseFloat(selectedTrip.cost) + terminalCost);
+      const totalCost =
+        peopleCount * (parseFloat(selectedTrip.cost) + terminalCost);
 
       const user_id = localStorage.getItem("user_id");
 
@@ -201,10 +202,10 @@ const TripsCards = () => {
       // Set success message with PDF download option
       setSuccess(
         <div>
-          Booking successful! 
-          <Button 
-            variant="contained" 
-            color="primary" 
+          Booking successful!
+          <Button
+            variant="contained"
+            color="primary"
             onClick={() => generatePDFReceipt(lastReceiptData)}
             sx={{ ml: 2 }}
           >
@@ -261,22 +262,32 @@ const TripsCards = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Grid 
-          container 
-          spacing={3} 
-          sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            justifyContent: 'flex-start' 
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            gap: 3, // Added spacing between cards
           }}
         >
           {existingTrips.map((trip) => (
             <Grid item xs={12} sm={6} md={4} key={trip.id}>
               <Card
                 sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  border: "1px solid #e0e0e0",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                    boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
+                  },
                 }}
               >
                 <CardMedia
@@ -288,10 +299,10 @@ const TripsCards = () => {
                       : "/path/to/default/image.jpg"
                   }
                   alt={trip.trip_name}
-                  sx={{ 
-                    objectFit: 'cover', 
-                    width: '100%', 
-                    height: '200px' 
+                  sx={{
+                    objectFit: "cover",
+                    width: "100%",
+                    height: "200px",
                   }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
@@ -312,6 +323,11 @@ const TripsCards = () => {
                   <Button
                     size="small"
                     color="primary"
+                    sx={{
+                        backgroundColor: "#3498DB",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#2980B9" },
+                      }}
                     onClick={() => handleOpenBookingDialog(trip)}
                     disabled={trip.capacity === 0}
                   >
@@ -325,7 +341,10 @@ const TripsCards = () => {
       )}
 
       {/* Rest of the dialog and alert components remain the same */}
-      <Dialog open={bookingDialogOpen} onClose={() => setBookingDialogOpen(false)}>
+      <Dialog
+        open={bookingDialogOpen}
+        onClose={() => setBookingDialogOpen(false)}
+      >
         <DialogTitle>Book Trip</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -350,9 +369,9 @@ const TripsCards = () => {
             variant="outlined"
             value={bookingData.contactNumber}
             onChange={handleBookingChange}
-            inputProps={{ 
+            inputProps={{
               pattern: "[0-9]{10}",
-              maxLength: 10
+              maxLength: 10,
             }}
             helperText="10-digit phone number"
           />
@@ -369,7 +388,11 @@ const TripsCards = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setBookingDialogOpen(false)} color="primary">
+          <Button
+            onClick={() => setBookingDialogOpen(false)}
+            color="primary"
+            variant="contained"
+          >
             Cancel
           </Button>
           <Button onClick={handleBookTrip} color="primary">
