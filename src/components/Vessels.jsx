@@ -10,6 +10,8 @@ import {
   Alert,
   Box,
   CircularProgress,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 import { supabase } from "../supabaseClient";
 import { DirectionsBoat } from "@mui/icons-material";
@@ -24,6 +26,9 @@ const initialFormState = {
 };
 
 const Vessels = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [vessels, setVessels] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,27 +42,23 @@ const Vessels = () => {
     try {
       setIsLoading(true);
 
-      const user_id = localStorage.getItem("user_id"); // Get user_id from local storage
+      const user_id = localStorage.getItem("user_id");
       if (!user_id) {
         setError("User not logged in");
         setIsLoading(false);
         return;
       }
-      console.log(user_id);
 
-      // Make the query to Supabase
       const { data, error } = await supabase
         .from("vessel")
         .select(
           "id, columns, crew, fuel, model, range, rows, total_seat, created_at"
         )
-        .eq("user_id", user_id); // Filter by user_id
+        .eq("user_id", user_id);
 
-      console.log(data);
       if (error) throw error;
 
-      // Correctly setting the vessels state
-      setVessels(data || []); // `data` is the array of vessels
+      setVessels(data || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -85,7 +86,7 @@ const Vessels = () => {
     if (!isFormValid()) return;
 
     try {
-      const user_id = localStorage.getItem("user_id"); // Get user_id from local storage
+      const user_id = localStorage.getItem("user_id");
       if (!user_id) {
         setError("User not logged in");
         return;
@@ -102,16 +103,14 @@ const Vessels = () => {
           fuel: parseFloat(formData.fuel),
           range: parseFloat(formData.range),
           total_seat,
-          user_id, // Include user_id in the insert
+          user_id,
         },
       ]);
 
       if (error) throw error;
 
-      // Check if data is valid before updating the state
       if (Array.isArray(data) && data.length > 0) {
-        setVessels((prev) => [...prev, data[0]]); // Add the newly created vessel directly to the state
-        // Update vessels state with valid data
+        setVessels((prev) => [...prev, data[0]]);
       } else {
         setError("Invalid data returned from database");
       }
@@ -145,100 +144,82 @@ const Vessels = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Card sx={{ mb: 4 }}>
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        py: { xs: 2, sm: 4 },
+        px: { xs: 1, sm: 2 }
+      }}
+    >
+      {/* Add New Vessel Card */}
+      <Card 
+        sx={{ 
+          mb: { xs: 2, sm: 4 },
+          borderRadius: 2,
+          boxShadow: 3
+        }}
+      >
         <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
+          <Typography 
+            variant={isMobile ? "h6" : "h5"} 
+            component="h2" 
+            gutterBottom
+            sx={{ textAlign: 'center' }}
+          >
             Add New Vessel
           </Typography>
 
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Model"
-                  name="model"
-                  value={formData.model}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Crew"
-                  name="crew"
-                  type="number"
-                  value={formData.crew}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Columns"
-                  name="columns"
-                  type="number"
-                  value={formData.columns}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Rows"
-                  name="rows"
-                  type="number"
-                  value={formData.rows}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Fuel (in Liters)"
-                  name="fuel"
-                  type="number"
-                  value={formData.fuel}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Range (in Nautical Miles)"
-                  name="range"
-                  type="number"
-                  value={formData.range}
-                  onChange={handleChange}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
+            <Grid container spacing={isMobile ? 2 : 3}>
+              {[
+                { label: "Model", name: "model", type: "text" },
+                { label: "Crew", name: "crew", type: "number" },
+                { label: "Columns", name: "columns", type: "number" },
+                { label: "Rows", name: "rows", type: "number" },
+                { label: "Fuel (in Liters)", name: "fuel", type: "number" },
+                { label: "Range (in Nautical Miles)", name: "range", type: "number" }
+              ].map((field) => (
+                <Grid item xs={12} sm={6} key={field.name}>
+                  <TextField
+                    fullWidth
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    variant="outlined"
+                    required
+                    size={isMobile ? "small" : "medium"}
+                  />
+                </Grid>
+              ))}
             </Grid>
 
             {error && (
-              <Alert severity="error" sx={{ mt: 2 }}>
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  mt: { xs: 1, sm: 2 },
+                  fontSize: { xs: '0.8rem', sm: '1rem' }
+                }}
+              >
                 {error}
               </Alert>
             )}
 
-            <Box sx={{ mt: 3 }}>
+            <Box 
+              sx={{ 
+                mt: { xs: 2, sm: 3 },
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+            >
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
-                size="large"
+                size={isMobile ? "medium" : "large"}
+                fullWidth={isMobile}
               >
                 Add Vessel
               </Button>
@@ -247,9 +228,21 @@ const Vessels = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ mb: 4 }}>
+      {/* Vessel List Card */}
+      <Card 
+        sx={{ 
+          mb: { xs: 2, sm: 4 },
+          borderRadius: 2,
+          boxShadow: 3
+        }}
+      >
         <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
+          <Typography 
+            variant={isMobile ? "h6" : "h5"} 
+            component="h2" 
+            gutterBottom
+            sx={{ textAlign: 'center' }}
+          >
             Vessel List
           </Typography>
 
@@ -258,34 +251,75 @@ const Vessels = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <Grid container spacing={3}>
+            <Grid 
+              container 
+              spacing={isMobile ? 2 : 3}
+              justifyContent={isMobile ? "center" : "flex-start"}
+            >
               {vessels.map((vessel) => (
-                <Grid item xs={12} md={4} key={vessel.id}>
+                <Grid 
+                  item 
+                  xs={12} 
+                  sm={6} 
+                  md={4} 
+                  key={vessel.id}
+                  sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center',
+                    width: '100%'
+                  }}
+                >
                   <Card
                     sx={{
+                      width: '100%',
                       display: "flex",
+                      flexDirection: isMobile ? "column" : "row",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      p: 2,
-                      border: "1px solid", // Add border
-                      borderColor: "grey.300", // Use a neutral color from the theme
-                      borderRadius: 2, // Add rounded corners
-                      boxShadow: 2, // Add a subtle shadow
+                      p: { xs: 1, sm: 2 },
+                      border: "1px solid",
+                      borderColor: "grey.300",
+                      borderRadius: 2,
+                      boxShadow: 2,
+                      textAlign: isMobile ? 'center' : 'left'
                     }}
                   >
                     <DirectionsBoat
-                      fontSize="large"
-                      sx={{ color: "primary.main" }}
+                      fontSize={isMobile ? "medium" : "large"}
+                      sx={{ 
+                        color: "primary.main",
+                        mb: isMobile ? 1 : 0,
+                        mx: isMobile ? 'auto' : 0
+                      }}
                     />
-                    <Box sx={{ ml: 2 }}>
-                      <Typography variant="h6">{vessel.model}</Typography>
-                      <Typography variant="body2">
+                    <Box 
+                      sx={{ 
+                        ml: { xs: 0, sm: 2 },
+                        textAlign: isMobile ? 'center' : 'left',
+                        width: '100%'
+                      }}
+                    >
+                      <Typography 
+                        variant={isMobile ? "subtitle1" : "h6"}
+                      >
+                        {vessel.model}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                      >
                         Seats: {vessel.total_seat}, Crew: {vessel.crew}
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                      >
                         Range: {vessel.range} NM, Fuel: {vessel.fuel} L
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                      >
                         Rows: {vessel.rows}, Columns: {vessel.columns}
                       </Typography>
                     </Box>

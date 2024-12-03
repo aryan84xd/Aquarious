@@ -11,8 +11,7 @@ import {
 import { jsPDF } from "jspdf";
 import "jspdf-autotable"; // For table in PDF
 import { supabase } from "../supabaseClient"; // Replace with your Supabase client import
-import logo from "../assets/logo.png";
- // Add your base64 logo here
+import logo from "../assets/logo.png"; // Add your base64 logo here
 
 const Receipts = () => {
   const [receipts, setReceipts] = useState([]);
@@ -107,7 +106,7 @@ const Receipts = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
         Receipts
       </Typography>
       {error && (
@@ -117,7 +116,7 @@ const Receipts = () => {
       )}
       <Grid container spacing={3}>
         {receipts.map((receipt) => (
-          <Grid item xs={12} sm={6} md={4} key={receipt.id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={receipt.id}>
             <Box sx={{ marginBottom: 3 }}>
               <Card
                 sx={{
@@ -133,7 +132,10 @@ const Receipts = () => {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" sx={{ fontWeight: "bold", color: "#2C3E50" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: "bold", color: "#2C3E50" }}
+                  >
                     {receipt.trip_name || "Trip Name Not Available"}
                   </Typography>
                   <Typography
@@ -175,3 +177,4 @@ const Receipts = () => {
 };
 
 export default Receipts;
+  

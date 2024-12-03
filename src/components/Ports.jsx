@@ -13,7 +13,8 @@ import {
 } from "@mui/material";
 import { supabase } from "../supabaseClient";
 import PortsMap from "./PortsMap";
-
+import PortsTable from "./PortTable";
+import theme from '../theme'
 const initialFormState = {
   name: "",
   no_gates: "",
@@ -133,7 +134,7 @@ const Ports = () => {
 
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={6} lg={4}>
                 <TextField
                   fullWidth
                   label="Port Name"
@@ -145,7 +146,7 @@ const Ports = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={6} lg={4}>
                 <TextField
                   fullWidth
                   label="Number of Gates"
@@ -158,7 +159,7 @@ const Ports = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={6} lg={4}>
                 <TextField
                   fullWidth
                   label="Terminal Cost"
@@ -172,7 +173,7 @@ const Ports = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} lg={3}>
                 <TextField
                   fullWidth
                   label="Latitude"
@@ -186,7 +187,7 @@ const Ports = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} lg={3}>
                 <TextField
                   fullWidth
                   label="Longitude"
@@ -213,6 +214,7 @@ const Ports = () => {
                 variant="contained"
                 color="primary"
                 size="large"
+                fullWidth
               >
                 Add Port
               </Button>
@@ -232,17 +234,25 @@ const Ports = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <Box
-              sx={{
-                height: 600,
-                width: "100%",
-                borderRadius: 1,
-                overflow: "hidden",
-              }}
-            >
-              <PortsMap ports={ports} />
-            </Box>
+            <Box 
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing(2),
+        padding: theme.spacing(1),
+        '@media (max-width: 600px)': {
+          padding: theme.spacing(0.5)
+        }
+      }}
+    >
+      <PortsTable ports={ports} />
+      <PortsMap ports={ports} />
+    </Box>
+            
+            
           )}
+          
         </CardContent>
       </Card>
     </Container>

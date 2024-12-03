@@ -8,7 +8,7 @@ const Trips = () => {
 
   // Render the component
   return (
-    <Stack width="70%">
+    <Stack width="80%">
       <TripsForm />
       <TripsCards />
     </Stack>

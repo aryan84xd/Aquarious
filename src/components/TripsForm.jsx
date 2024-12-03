@@ -250,7 +250,7 @@ const TripsForm = () => {
             />
 
             {/* Start Port and End Port */}
-            <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
               <TextField
                 select
                 fullWidth
@@ -289,7 +289,7 @@ const TripsForm = () => {
             </Stack>
 
             {/* Start Time and End Time */}
-            <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
               <TextField
                 type="time"
                 fullWidth
@@ -346,12 +346,11 @@ const TripsForm = () => {
               ))}
             </TextField>
 
-            {/* Cost and Distance */}
-            <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
+            {/* Cost, Distance, and Capacity */}
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
               <TextField
-                type="number"
                 fullWidth
-                label="Cost (in USD)"
+                label="Cost"
                 name="cost"
                 value={formData.cost}
                 onChange={handleChange}
@@ -360,62 +359,63 @@ const TripsForm = () => {
               />
 
               <TextField
-                type="number"
                 fullWidth
-                label="Distance (in km)"
+                label="Distance"
                 name="distance"
                 value={formData.distance}
                 onChange={handleChange}
                 variant="outlined"
                 required
               />
+
+              <TextField
+                fullWidth
+                label="Capacity"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                variant="outlined"
+                required
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
             </Stack>
 
-            {/* Capacity */}
-            <TextField
-              fullWidth
-              label="Capacity"
-              name="capacity"
-              value={formData.capacity || ""}
-              variant="outlined"
-              disabled
-            />
-
-            {/* Image Upload */}
-            <TextField
-              type="file"
-              fullWidth
-              label=""
-              onChange={handleImageChange}
-              variant="outlined"
-              required
-            />
+            {/* Image */}
+            <Box>
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              >
+                Upload Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleImageChange}
+                />
+              </Button>
+            </Box>
 
             {/* Submit Button */}
             <Button
+              type="submit"
               variant="contained"
               color="primary"
-              type="submit"
               fullWidth
               disabled={isLoading}
-              sx={{ marginTop: 2 }} // Added margin-top to create space between button and fields
             >
               {isLoading ? "Creating Trip..." : "Create Trip"}
             </Button>
+
+            {/* Error and Success Alerts */}
+            {error && <Alert severity="error">{error}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
           </Stack>
         </form>
-
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            {success}
-          </Alert>
-        )}
       </CardContent>
     </Card>
   );

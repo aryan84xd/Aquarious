@@ -3,14 +3,9 @@ import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { 
   Typography, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper, 
-  Stack 
+  Box,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import 'leaflet/dist/leaflet.css';
 
@@ -24,7 +19,11 @@ const redMarkerIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-const PortsMap = ({ ports = [] }) => {
+const PortMap = ({ ports = [] }) => {
+  // Use theme to check for mobile devices
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   // Calculate the map center based on the ports array
   const getMapCenter = () => {
     const validPorts = ports.filter(port => 
@@ -51,45 +50,22 @@ const PortsMap = ({ ports = [] }) => {
   };
 
   return (
-    <Stack spacing={3}> {/* Adjust spacing between map and table */}
-      {/* Ports Table */}
-      <TableContainer 
-        component={Paper} 
-        sx={{
-          maxHeight: ports.length > 5 ? '400px' : 'auto', 
-          overflowY: 'auto', 
-          zIndex: 10  // Ensure table stays above the map
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Latitude</TableCell>
-              <TableCell>Longitude</TableCell>
-              <TableCell>Number of Gates</TableCell>
-              <TableCell>Terminal Cost</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ports.map((port) => (
-              <TableRow key={port.id}>
-                <TableCell>{port.name}</TableCell>
-                <TableCell>{port.latitude}</TableCell>
-                <TableCell>{port.longitude}</TableCell>
-                <TableCell>{port.no_gates}</TableCell>
-                <TableCell>${port.terminal_cost}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Map Container */}
+    <Box 
+      sx={{
+        width: '100%',
+        height: isMobile ? '250px' : '400px',
+        borderRadius: '8px',
+        overflow: 'hidden'
+      }}
+    >
       <MapContainer
         center={getMapCenter()}
-        zoom={8}
-        style={{ height: '400px', width: '100%' }}
+        zoom={isMobile ? 6 : 8}
+        style={{ 
+          height: '100%', 
+          width: '100%',
+          zIndex: 1
+        }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -110,30 +86,44 @@ const PortsMap = ({ ports = [] }) => {
               icon={redMarkerIcon}
             >
               <Popup>
-                <div>
-                  <Typography variant="h6" component="h3" gutterBottom>
+                <Box sx={{ 
+                  maxWidth: isMobile ? '200px' : '300px',
+                  fontSize: isMobile ? '0.8rem' : '1rem'
+                }}>
+                  <Typography 
+                    variant="h6" 
+                    component="h3" 
+                    sx={{ 
+                      fontSize: isMobile ? '1rem' : '1.25rem',
+                      marginBottom: '8px'
+                    }}
+                  >
                     {port.name}
                   </Typography>
-                  <Typography variant="body2">
-                    Latitude: {port.latitude}
-                  </Typography>
-                  <Typography variant="body2">
-                    Longitude: {port.longitude}
-                  </Typography>
+                  {!isMobile && (
+                    <>
+                      <Typography variant="body2">
+                        Latitude: {port.latitude}
+                      </Typography>
+                      <Typography variant="body2">
+                        Longitude: {port.longitude}
+                      </Typography>
+                    </>
+                  )}
                   <Typography variant="body2">
                     Gates: {port.no_gates || 'N/A'}
                   </Typography>
                   <Typography variant="body2">
                     Terminal Cost: ${port.terminal_cost || 'N/A'}
                   </Typography>
-                </div>
+                </Box>
               </Popup>
             </Marker>
           );
         })}
       </MapContainer>
-    </Stack>
+    </Box>
   );
 };
 
-export default PortsMap;
+export default PortMap;

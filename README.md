@@ -1,70 +1,136 @@
-# Getting Started with Create React App
+#🚢 Aquarious
+A complete solution for ferry companies to manage operations, including trip scheduling, vessel management, and customer bookings.
+---
+## 📖 Table of Contents  
+- [📝 Introduction](#-introduction)  
+- [✨ Features](#✨-features)  
+- [🛠️ Technologies Used](#🛠️-technologies-used)  
+- [⚙️ Installation](#⚙️-installation)  
+- [🚀 Usage](#🚀-usage)  
+- [📂 Project Structure](#📂-project-structure)  
+- [📸 Screenshots](#📸-screenshots)  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+---
+## 📝 Introduction  
+**Aquarious** is a centralized management system for ferry companies. Designed to streamline operations, this platform empowers employees at ports to:  
 
-In the project directory, you can run:
+- Manage and track ferry trips.  
+- Book trips for customers.  
+- Generate detailed receipts for transactions.  
 
-### `npm start`
+The system supports port and vessel management while providing a visually dynamic interface with mapping (via Leaflet.js) for real-time location updates.  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ Features  
 
-### `npm test`
+### 1. **Port Management**  
+- Add new ports dynamically to the system.  
+- Visualize ports on a real-time map.  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+### 2. **Fleet Management**  
+- Add and manage vessels with details like capacity, size, and type.  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. **Trip Management**  
+- Create and manage ferry trips between ports.  
+- Assign vessels and set trip parameters such as price and timing.  
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 4. **Customer Booking**  
+- Employees can book trips for customers.  
+  - Input customer details and passenger count.  
+  - Validate bookings against vessel capacity.  
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 5. **Receipt Generation**  
+- Automatically generate PDF receipts for each booking with trip and customer details.  
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 6. **Map Integration**  
+- View all ports and scheduled trips dynamically on an interactive map powered by **Leaflet.js**.  
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🛠️ Technologies Used  
 
-### Code Splitting
+### **Frontend**  
+- **React.js** with Material-UI for a responsive interface.  
+- **Leaflet.js** for interactive map integration.  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### **Backend**  
+- **Supabase** for backend and database management.  
 
-### Analyzing the Bundle Size
+### **Others**  
+- **jsPDF** for PDF receipt generation.  
+- **Google Translate widget** for multilingual capabilities.  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## ⚙️ Installation  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### **Prerequisites**  
+- **Node.js**  
+- **Supabase account**  
+1. Clone the repository:  
+   ```bash  
+   git clone https://github.com/your-username/aquarious.git  
+   cd aquarious  
+###Install dependencies:
 
-### Advanced Configuration
+```bash
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    npm install  
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    npm start  
+```
+🚀 Usage
+Log in as a Port Employee
+Employees manage all bookings and operations.
+Port and Vessel Setup
+Add and manage ports and vessels for the company’s fleet.
+Trip Creation
+Define trips between ports, assign vessels, and set parameters like time and price.
+Customer Booking
+Record customer bookings at the port.
+Validate capacity and generate a receipt.
+Visualize Operations
+Use the map to view active ports and trips.
+📂 Project Structure
+plaintext
+Copy code
+aquarious/  
+│  
+├── public/                 # Static assets and favicon.  
+├── src/  
+│   ├── components/         # Reusable React components.  
+│   ├── pages/              # Page-level components.  
+│   ├── assets/             # Images, logos, and other assets.  
+│   ├── supabaseClient.js   # Supabase configuration.  
+│   └── App.js              # Main application file.  
+├── .env                    # Environment variables.  
+├── package.json            # Dependencies and scripts.  
+└── README.md               # Project documentation.  
+📸 Screenshots
+Port Management
+Manage all ports with dynamic map visualization.
+![alt text](image-5.png)
+Fleet Management
+Add and track vessels in the fleet.
+![alt text](image-2.png)
+Trip Booking
+Seamlessly manage customer bookings.
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-3.png)
+Receipt Generation
+Generate detailed PDF receipts for each booking.
+![alt text](image-4.png)

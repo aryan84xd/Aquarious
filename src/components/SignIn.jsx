@@ -1,81 +1,100 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { Stack } from '@mui/material';
+import { Stack, TextField, Button, Typography, useMediaQuery, useTheme, Box } from '@mui/material';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Use media query to check screen size
 
   const handleSignIn = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
     } else {
-      // Save user_id to localStorage
       const user_id = data.user.id; // Retrieve user_id
       localStorage.setItem('user_id', user_id); // Save to local storage
-      navigate('/main'); // Redirect to orders page
+      navigate('/main'); // Redirect to main page
     }
   };
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: 'flex',
-        justifyContent: 'center', // Center horizontally
-        alignItems: 'flex-start', // Align items starting from the top
-        height: '80vh',
-        width: '100vw', // Full viewport height
-        backgroundColor: '#f9f9f9', // Optional background color for the page
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '80vh', // Full viewport height
+        backgroundColor: '#f5f5f5', // Light background for the page
       }}
     >
       <Stack
-        spacing={4} // Adds spacing between children
+        spacing={4}
         sx={{
-          width: '15vw',
-          height: '30vh',
-          backgroundColor: '#fff', // Optional: white background for form
-          padding: 4, // Adds padding inside the Stack
-          border: '1px solid lightgrey', // Light grey border
-          borderRadius: 2, // Optional: rounded corners
-          marginTop: '10%', // Distance from the top
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)', // Optional: subtle shadow for aesthetics
+          width: isSmallScreen ? '90%' : '35vw', // More width on larger screens but capped at 35vw
+          maxWidth: '400px', // Maximum width to prevent form from becoming too large on very wide screens
+          backgroundColor: '#fff', // White background for the form
+          padding: 4,
+          border: '1px solid #ddd', // Soft border
+          borderRadius: 3, // Rounded corners
+          boxShadow: '0 4px 10px rgba(0,0,0,0.1)', // Subtle shadow for depth
         }}
       >
-        <h2>Sign In</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <input
-          type="email"
-          placeholder="Email"
+        <Typography variant="h4" component="h2" align="center" sx={{ fontWeight: 'bold', color: '#333' }}>
+          Sign In
+        </Typography>
+
+        {error && <Typography color="error" variant="body2" align="center">{error}</Typography>}
+
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} // Styled input
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+            },
+          }}
         />
-        <input
+
+        <TextField
+          label="Password"
           type="password"
-          placeholder="Password"
+          variant="outlined"
+          fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} // Styled input
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+            },
+          }}
         />
-        <button
+
+        <Button
+          variant="contained"
+          color="primary"
           onClick={handleSignIn}
-          style={{
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            backgroundColor: '#0F53A8',
-            color: '#fff',
-            cursor: 'pointer',
+          fullWidth
+          sx={{
+            padding: '12px',
+            fontSize: isSmallScreen ? '14px' : '16px',
+            borderRadius: 2,
+            '&:hover': {
+              backgroundColor: '#1976d2', // Slightly darker on hover
+            },
           }}
         >
           Sign In
-        </button>
+        </Button>
       </Stack>
-    </div>
+    </Box>
   );
 };
 
